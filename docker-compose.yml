@@ -1,0 +1,104 @@
+version: '3'
+services:
+  nginx:
+    container_name: mynginx
+    image: nginx:1.14.1
+    ports:
+      - "8081:80"
+    links:
+      - php5fpm
+    volumes:
+      - ./nginx:/etc/nginx
+      - ./wwwroot:/usr/share/nginx/html
+  php7cli:
+    container_name: myphp7cli
+    build: ./php7cli
+    image: php7cli
+    ports:
+      - "9501:9501"
+    volumes:
+      - ./wwwroot:/home
+    command: sleep 86400  
+    #command: php /home/sd3_demo/bin/start_swoole_server.php start
+  php7fpm:
+    container_name: myphp7fpm
+    build: ./php7fpm
+    image: php7fpm
+    ports:
+      - "9001:9000"
+    #links:
+    #  - redis
+    #  - memcached
+    #  - mysql
+    #  - mongodb
+    volumes:
+      - ./wwwroot:/usr/share/nginx/html
+  php5fpm:
+    container_name: myphp5fpm
+    build: ./php5fpm
+    image: php5fpm
+    ports:
+      - "9001:9000"
+    volumes:
+      - ./wwwroot:/usr/share/nginx/html
+  redis:
+    container_name: myredis
+    image: redis:5.0.0
+    restart: always
+    ports:
+      - "6380:6379"
+    volumes:
+      - ./redis/data:/data
+      - ./redis/conf:/etc/redis/redis.conf
+    command: redis-server /etc/redis/redis.conf/myredis.conf
+  memcached:
+    container_name: mymemcached
+    image: bitnami/memcached:1.5.12
+    restart: always
+    ports:
+      - "11212:11211"
+    environment:
+      - MEMCACHED_CACHE_SIZE=128
+  mysql:
+    image: mysql:5.6
+    container_name: mydb
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+    volumes:
+      - ./mysql/conf:/etc/mysql/conf.d
+      - ./mysql/data:/val/lib/mysql
+      - ./mysql/logs:/logs
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:4.8.3
+    container_name: myphpadmin
+    ports:
+      - "8888:80"
+    environment:
+      PMA_ARBITRARY: 1
+      MYSQL_ROOT_PASSWORD: "123456"
+      PMA_HOSTS: mydb
+    links:
+      - mysql
+  mongodb:
+    container_name: mymongo
+    image: bitnami/mongodb:4.0.3
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    ports:
+      - "27018:27017"
+    volumes:
+      - ./mongodb/data:/bitnami
+      - ./mongodb/conf:/opt/bitnami/mongodb/conf
+  nodejs:
+    container_name: mynodejs
+    build: ./nodejs
+    image: nodejs
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./wwwroot:/app
+    command: sleep 86400

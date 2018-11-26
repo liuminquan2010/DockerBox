@@ -1,0 +1,12 @@
+{
+  "require": {
+    "tmtbe/swooledistributed":"=3.6.2",
+    "hassankhan/config":"1.1.0"
+  },
+ "autoload": {
+    "psr-4": {
+      "app\\": "src/app",
+      "test\\": "src/test"
+    }
+  }
+}

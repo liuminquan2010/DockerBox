@@ -1,0 +1,1 @@
+18-11-06 14:43:17:Exception at file[/home/es2_demo/vendor/easyswoole/easyswoole/src/ServerManager.php] line[129] message:[addListener with server name:ConsoleTcp at host:127.0.0.1 port:9091 fail]
